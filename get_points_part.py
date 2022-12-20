@@ -1,6 +1,4 @@
-# from manim import *
 import numpy as np
-# from math import cos,sin
 import cv2
 # import os
 import matplotlib.pyplot as plt
@@ -28,9 +26,6 @@ canny = cv2.Canny(img, 100, 200)
 
 # canny=255-cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
 
-#cv2.imshow('image',canny)
-#cv2.waitKey(0)
-#cv2.destroyAllWindows()
 
 plt.imshow(canny)
 plt.show()
@@ -39,7 +34,6 @@ points=[]
 x_shift=new_dim[0]/2
 y_shift=new_dim[1]/2
 sf=max_coords_length/max(new_dim)
-
 
 
 for i in range(new_dim[1]):
@@ -64,30 +58,23 @@ for i in path_idx:
     x.append((points[i][0]-x_shift)*sf)
     y.append((points[i][1]-y_shift)*sf)
 
-# sections=10
-# sec_length=int(len(path)/sections)
-# prev=0
-
-# for i in range(sections-1):
-#     plt.scatter(x[prev:prev+sec_length],y[prev:prev+sec_length],s=2)
-#     plt.show()
-#     prev+=sec_length
 
 plt.scatter(x,y,s=1)
 plt.show()
 del path[-1]
 
-# freqs=np.fft.fftfreq(len(path))
-# mask=freqs>=0
-# freqs=freqs[mask]*20*PI
-# N=len(freqs)
-# fft=np.fft.fft(path)
-# fft=fft[mask]*2/N
+x.clear()
+y.clear()
+
 
 N=len(path)
 freqs=np.fft.fftfreq(N)*20*PI
 fft=np.fft.fft(path)/N
 
+mask=abs(fft)>=0.01
+fft=fft[mask]
+freqs=freqs[mask]
+N=len(freqs)
 
 dtype = [('amp', float), ('freq', float), ('real', float), ('imag', float)]
 arrow_dat=[]
