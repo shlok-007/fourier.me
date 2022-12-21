@@ -8,9 +8,10 @@ from time import time
 PI=3.14159265359
 max_img_dim=150
 max_coords_length=10
+threshold_amp=0.01
 
 # imgName=input("Enter name of the image")
-imgName="shlok.jpg"      # "Robot.png"  "celeb1.jpeg"
+imgName="pi-symbol.png"      # "Robot.png"  "celeb1.jpeg"
 img = cv2.imread("images\\"+imgName)
 
 size=img.shape
@@ -71,7 +72,7 @@ N=len(path)
 freqs=np.fft.fftfreq(N)*20*PI
 fft=np.fft.fft(path)/N
 
-mask=abs(fft)>=0.01
+mask=abs(fft)>=threshold_amp
 fft=fft[mask]
 freqs=freqs[mask]
 N=len(freqs)
@@ -91,7 +92,6 @@ print(len(freqs))
 
 arrow_dat=np.array(arrow_dat,dtype=dtype)
 arrow_dat=np.sort(arrow_dat,order='amp')
-# np.sort(arrow_dat)
 arrow_dat=arrow_dat[::-1]
 np.savetxt("arrow_data\\arrow_dat_"+imgName+".csv", arrow_dat, delimiter=",")
 

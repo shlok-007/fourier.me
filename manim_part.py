@@ -4,30 +4,29 @@ import numpy as np
 from time import time
 config.media_embed = True
 
-n_vectors=116
+max_n_vectors=75
 speed=10
-play_time=17
+play_time=10
 fps=60
 min_rad=0.2
 
-arrow_dat = np.genfromtxt("arrow_data\\arrow_dat_shlok.jpg.csv", delimiter=",")
+arrow_dat = np.genfromtxt("arrow_data\\arrow_dat_pi-symbol2.png.csv", delimiter=",")
 N=len(arrow_dat)
-print(N)
 
-arrow_dat=arrow_dat[0:n_vectors]
-N=n_vectors
+if(N>max_n_vectors):
+    arrow_dat=arrow_dat[0:max_n_vectors]
+    N=max_n_vectors
 
+print("Number of vectors being used:",N)
+print("Rendering in 1080p 60 fps")
 
 class Fourier_Epicycles(Scene):
     def construct(self):
 
-        start_time=time()
         ax = NumberPlane(y_range=[-5, 5], background_line_style={"stroke_opacity": 0.4})
-        vg=VGroup()
+        start_time=time()
 
-        # arrow_dat[0][0]=5
-        # arrow_dat[0][2]=2
-        # arrow_dat[0][3]=0
+        vg=VGroup()
 
         dat=arrow_dat[0]
         print(arrow_dat)
@@ -65,7 +64,6 @@ class Fourier_Epicycles(Scene):
         new_height=2*(arrow_dat[0][0] + 3*arrow_dat[1][0])
         self.camera.frame_height=new_height
         self.camera.frame_width=16*new_height/9
-        # self.add(trace)
         self.add(ax,vg)
         self.wait(play_time)
 
