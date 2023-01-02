@@ -32,7 +32,8 @@ def process_image():
     subprocess.run(["manim","-ql", "Manim_Epicycles_Animation.py", "Fourier_Epicycles"])    #480p15
     # time.sleep(5)
 
-    output_file_path="media\\videos\\Manim_Epicycles_Animation\\480p15\\Fourier_Epicycles.mp4"
+    output_file_path="media/videos/Manim_Epicycles_Animation/480p15/Fourier_Epicycles.mp4"
+    # output_file_path="media\\videos\\Manim_Epicycles_Animation\\480p15\\Fourier_Epicycles.mp4"
     # output_file_path="media\\videos\\server\\720p30\\Fourier_Epicycles.mp4"
     # output_file_path="media\\videos\\server\\1080p60\\Fourier_Epicycles.mp4"
 
