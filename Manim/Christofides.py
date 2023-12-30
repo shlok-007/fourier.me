@@ -1,24 +1,24 @@
 def tsp(data):
     # build a graph
     G = build_graph(data)
-    print("Graph: ", G)
+    # print("Graph: ", G)
 
     # build a minimum spanning tree
     MSTree = minimum_spanning_tree(G)
-    print("MSTree: ", MSTree)
+    # print("MSTree: ", MSTree)
 
     # find odd vertexes
     odd_vertexes = find_odd_vertexes(MSTree)
-    print("Odd vertexes in MSTree: ", odd_vertexes)
+    # print("Odd vertexes in MSTree: ", odd_vertexes)
 
     # add minimum weight matching edges to MST
     minimum_weight_matching(MSTree, G, odd_vertexes)
-    print("Minimum weight matching: ", MSTree)
+    # print("Minimum weight matching: ", MSTree)
 
     # find an eulerian tour
     eulerian_tour = find_eulerian_tour(MSTree, G)
 
-    print("Eulerian tour: ", eulerian_tour)
+    # print("Eulerian tour: ", eulerian_tour)
 
     current = eulerian_tour[0]
     path = [current]
@@ -37,10 +37,10 @@ def tsp(data):
     length +=G[current][eulerian_tour[0]]
     path.append(eulerian_tour[0])
 
-    print("Result path: ", path)
-    print("Result length of the path: ", length)
+    # print("Result path: ", path)
+    # print("Result length of the path: ", length)
 
-    return length, path
+    return path
 
 
 def get_length(x1, y1, x2, y2):

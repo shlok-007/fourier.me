@@ -1,14 +1,12 @@
 /GitHub_Folder
-/__pycache__/
+**/__pycache__
 /arrow_data/
 /EpiCycle_Animations/
 /images/
-/learning/
-/testing/
-/media/
+/testing
+**/media
 
 WebApp/__pycache__/
 WebApp/arrow_data/
 WebApp/media
-hed-edge-detector
 HED_Model
