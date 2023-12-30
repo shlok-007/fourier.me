@@ -2,7 +2,7 @@ import numpy as np
 import cv2
 # import os
 import matplotlib.pyplot as plt
-from Christofides import christofides
+import Christofides as christofides
 from time import time
 
 PI=3.14159265359
@@ -12,7 +12,7 @@ threshold_amp=0.01
 
 # imgName=input("Enter name of the image")
 imgName="Kolkata.jpeg"      # "Robot.png"  "celeb1.jpeg"
-img = cv2.imread("images\\"+imgName)
+img = cv2.imread("images/"+imgName)
 
 size=img.shape
 mul_factor=max_img_dim/max(size)

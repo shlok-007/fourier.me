@@ -12,7 +12,7 @@ fps=60
 min_rad=0.2
 
 imgName="Robot.png"
-arrow_dat = np.genfromtxt("arrow_data\\arrow_dat_"+imgName+".csv", delimiter=",")
+arrow_dat = np.genfromtxt("arrow_data/arrow_dat_"+imgName+".csv", delimiter=",")
 N=len(arrow_dat)
 
 if(N>max_n_vectors):
