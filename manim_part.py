@@ -7,11 +7,11 @@ config.media_embed = True
 
 max_n_vectors=175
 speed=10
-play_time=15
-fps=30
+play_time=10
+fps=60
 min_rad=0.2
 
-imgName="Kolkata.jpeg"
+imgName="Robot.png"
 arrow_dat = np.genfromtxt("arrow_data\\arrow_dat_"+imgName+".csv", delimiter=",")
 N=len(arrow_dat)
 
@@ -20,7 +20,7 @@ if(N>max_n_vectors):
     N=max_n_vectors
 
 print("Number of vectors being used:",N)
-print("Rendering in 1080p 60 fps\n")
+print("Rendering in 720p 30 fps\n")
 
 class Fourier_Epicycles(Scene):
     def construct(self):

@@ -10,3 +10,5 @@
 WebApp/__pycache__/
 WebApp/arrow_data/
 WebApp/media
+hed-edge-detector
+HED_Model
