@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 # Parameters
 img_res = 512
 kernel_size = 5
-pixel_threshold = 100
+pixel_threshold = 120
 
 debug = __name__ == "__main__"
 
@@ -45,17 +45,18 @@ def get_lineart(image):
             result[i + y - mid, j + x - mid] = 255
 
     if debug:
-        print("Result shape=", result.shape)
         plt.imshow(result, cmap="gray")
         plt.show()
-        cv2.imwrite("../images/control.png", lineart)
-        cv2.imwrite("../images/control_conv.png", result)
+    
+    print("Result shape=", result.shape)
+    cv2.imwrite("../images/control.png", lineart)
+    cv2.imwrite("../images/control_conv.png", result)
     
     return result
 
 
 if __name__ == "__main__":
-    imgName = "pi-symbol.png"  # "Robot.png"  "celeb1.jpeg"  "mummy.jpg"  "portrait.jpeg"
+    imgName = "pi-symbol.png"  # "Robot.png"  "celeb1.jpeg"  "pi-symbol.png"
     image = cv2.imread("../images/" + imgName)
     
     get_lineart(image)

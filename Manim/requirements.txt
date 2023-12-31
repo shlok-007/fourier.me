@@ -1,0 +1,4 @@
+controlnet_aux==0.0.7
+matplotlib==3.7.2
+numpy==1.26.2
+opencv_python==4.8.1.78

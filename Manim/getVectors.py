@@ -11,13 +11,11 @@ max_img_dim = 512
 max_coords_length = 10
 threshold_amp = 0.01
 
-PI = 3.14159265359
 debug = __name__ == "__main__"
 
 def get_vectors(lineart):
 
     dim = lineart.shape
-    print("Image shape=", dim)
 
     if debug:
         plt.imshow(lineart)
@@ -61,7 +59,7 @@ def get_vectors(lineart):
     del path[-1]
 
     N = len(path)
-    freqs = np.fft.fftfreq(N) * 20 * PI
+    freqs = np.fft.fftfreq(N) * 20 * np.pi
     fft = np.fft.fft(path) / N
 
     mask = abs(fft) >= threshold_amp
@@ -89,13 +87,14 @@ def get_vectors(lineart):
     
     if debug:
         np.savetxt("../arrow_data/arrow_dat_" + imgName + ".csv", arrow_dat, delimiter=",")
+    else:
+        np.savetxt("../arrow_data/arrow_dat_last.csv", arrow_dat, delimiter=",")
 
-    print("Done")
     return arrow_dat
 
 
 if __name__ == "__main__":
-    imgName = "pi-symbol.png"  # "Robot.png"  "celeb1.jpeg"  "mummy.jpg"  "portrait.jpeg"
+    imgName = "pi-symbol.png"   # "Robot.png"  "celeb1.jpeg"  "pi-symbol.png"
     image = cv2.imread("../images/" + imgName)
     lineart = getLineArt.get_lineart(image)
     get_vectors(lineart)
