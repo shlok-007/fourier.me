@@ -1,12 +1,12 @@
-/GitHub_Folder
 **/__pycache__
+**/node_modules
+**/media
+**/.env**
+/GitHub_Folder
 /arrow_data/
 /EpiCycle_Animations/
 /images/
 /testing
-**/media
 
-WebApp/__pycache__/
-WebApp/arrow_data/
-WebApp/media
-HED_Model
+/old_WebApp
+/HED_Model

@@ -1,4 +1,4 @@
-def christofides(data):
+def tsp(data):
     # build a graph
     G = build_graph(data)
     # print("Graph: ", G)
@@ -192,3 +192,6 @@ def remove_edge_from_matchedMST(MatchedMST, v1, v2):
             del MatchedMST[i]
 
     return MatchedMST
+
+
+# code by Retsediv (https://github.com/Retsediv/ChristofidesAlgorithm)
