@@ -4,6 +4,7 @@ from flask_socketio import SocketIO, emit
 import numpy as np
 import io
 from PIL import Image
+import cv2
 
 import getLineArt
 import getVectors
@@ -12,6 +13,9 @@ import base64
 
 app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins='http://localhost:3000')
+
+encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
+b64_src = "data:image/jpg;base64,"
 
 @socketio.on('connect', namespace='/fourierify')
 def fourierify_connect():
@@ -28,8 +32,11 @@ def process_image(image_base64):
     image = np.array(Image.open(io.BytesIO(image_bytes)))
 
     lineart = getLineArt.get_lineart(image)
-    lineart_stream = base64.b64encode(lineart.tobytes())
-    emit('lineart', lineart_stream, namespace='/fourierify')
+    result, frame_encoded = cv2.imencode(".jpg", lineart, encode_param)
+    processed_img_data = base64.b64encode(frame_encoded).decode()
+    processed_img_data = b64_src + processed_img_data
+    # lineart_stream = base64.b64encode(lineart.tobytes())
+    emit('lineart', processed_img_data, namespace='/fourierify')
 
     arrow_dat = getVectors.get_vectors(lineart)
     emit('vectorData', arrow_dat.tolist(), namespace='/fourierify')

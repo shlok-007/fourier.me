@@ -49,8 +49,7 @@ def get_lineart(image):
         plt.show()
     
     print("Result shape=", result.shape)
-    cv2.imwrite("../../images/control.png", lineart)
-    cv2.imwrite("../../images/control_conv.png", result)
+    # cv2.imwrite("lineart.png", result)
     
     return result
 

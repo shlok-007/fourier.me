@@ -9,7 +9,7 @@ import getLineArt
 # Parameters
 max_img_dim = 512
 max_coords_length = 10
-threshold_amp = 0.01
+threshold_amp = 0.005
 
 debug = __name__ == "__main__"
 

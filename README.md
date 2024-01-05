@@ -10,7 +10,7 @@ Here's a TLDR of how it works:
 
 1. Takes any image(jpg/jpeg/png...etc) as input.
 2. Resizes this image to feasible proportions.
-3. Uses Canny Edge Detector(of the OpenCV library) to find the edges or outline of the image.
+3. Uses [ControlNet's LineartDetector Model](https://huggingface.co/ControlNet-1-1-preview/control_v11p_sd15_lineart) to find the outline of image.
 4. From this image, it gets the coordinates of the outline pixels.
 5. Using the Christofides' algorithm, it finds the shortest closed tour of the points.(doing this is important for the epicycles to work as intended)
 6. Converts these points into complex numbers.

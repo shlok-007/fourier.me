@@ -1,5 +1,6 @@
 import * as React from "react"
 import { ChangeEvent, FC, useState } from 'react';
+import { useToast } from "@/components/ui/use-toast"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -16,12 +17,17 @@ import { ImageIcon } from "@radix-ui/react-icons"
 export default function ImageSelector( {getVectors}: {getVectors: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, file: File | null) => void}) {
 
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
+    const {toast} = useToast();
 
     const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
       if (e.target.files) {
         // check if the file is an image
         if (e.target.files[0].type.split('/')[0] !== 'image') {
-          alert('Please upload an image file');
+          console.log("Invalid file type");
+          toast({
+            title: "Invalid file type",
+            description: "Please upload an image file",
+          })
           return;
         }
         setSelectedImage(e.target.files[0]);
@@ -29,7 +35,7 @@ export default function ImageSelector( {getVectors}: {getVectors: (e: React.Mous
     };
 
   return (
-    <Card className="w-96">
+    <Card className="w-80 md:w-96">
       <CardHeader className="text-center">
         <CardTitle>Upload your image</CardTitle>
         <CardDescription>and see the magic !</CardDescription>
