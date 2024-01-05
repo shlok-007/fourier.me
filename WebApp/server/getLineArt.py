@@ -21,6 +21,7 @@ def get_lineart(image):
     else:
         image = cv2.resize(image, new_dim, interpolation=cv2.INTER_AREA)
 
+    image = cv2.GaussianBlur(image, (3, 3), 0)
     print("Loading processor...")
     processor = LineartDetector.from_pretrained("lllyasviel/Annotators")
     print("Processing image...")
@@ -51,7 +52,7 @@ def get_lineart(image):
     print("Result shape=", result.shape)
     # cv2.imwrite("lineart.png", result)
     
-    return result
+    return result, lineart
 
 
 if __name__ == "__main__":

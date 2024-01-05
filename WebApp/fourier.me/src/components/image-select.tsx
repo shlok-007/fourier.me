@@ -13,15 +13,20 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { ImageIcon } from "@radix-ui/react-icons"
+import { Skeleton } from "./ui/skeleton";
 
-export default function ImageSelector( {getVectors}: {getVectors: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, file: File | null) => void}) {
+interface ImageSelectorProps {
+  getVectors: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, selectedImage: File | null, setImageSubmitted: React.Dispatch<React.SetStateAction<boolean>>) => void;
+}
+
+export default function ImageSelector<Props extends ImageSelectorProps>({ getVectors }: Props) {
 
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
+    const [imageSubmitted, setImageSubmitted] = useState<boolean>(false);
     const {toast} = useToast();
 
     const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
       if (e.target.files) {
-        // check if the file is an image
         if (e.target.files[0].type.split('/')[0] !== 'image') {
           console.log("Invalid file type");
           toast({
@@ -35,7 +40,10 @@ export default function ImageSelector( {getVectors}: {getVectors: (e: React.Mous
     };
 
   return (
-    <Card className="w-80 md:w-96">
+    <Card className="w-80 md:w-96
+    ">
+      {!imageSubmitted ?
+      <>
       <CardHeader className="text-center">
         <CardTitle>Upload your image</CardTitle>
         <CardDescription>and see the magic !</CardDescription>
@@ -64,10 +72,22 @@ export default function ImageSelector( {getVectors}: {getVectors: (e: React.Mous
         <Button 
             className="w-64 h-14"
             disabled={!selectedImage}
-            onClick={(e) => { getVectors(e, selectedImage) } }
+            onClick={(e) => { getVectors(e, selectedImage, setImageSubmitted) } }
             
         >Submit</Button>
       </CardFooter>
+      </>
+      :
+      <>
+        <CardHeader className="text-center">
+          <CardTitle>Let him cook!</CardTitle>
+          <CardDescription>It may take around 30 seconds</CardDescription>
+        </CardHeader>
+        <CardContent className="flex items-center justify-center mb-8">
+          <Skeleton className="w-80 h-80" />
+        </CardContent>
+      </>
+      }
     </Card>
   )
 }

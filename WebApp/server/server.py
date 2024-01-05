@@ -31,14 +31,14 @@ def process_image(image_base64):
     # Convert the bytes object to a numpy array
     image = np.array(Image.open(io.BytesIO(image_bytes)))
 
-    lineart = getLineArt.get_lineart(image)
+    conv_lineart, lineart = getLineArt.get_lineart(image)
     result, frame_encoded = cv2.imencode(".jpg", lineart, encode_param)
     processed_img_data = base64.b64encode(frame_encoded).decode()
     processed_img_data = b64_src + processed_img_data
     # lineart_stream = base64.b64encode(lineart.tobytes())
     emit('lineart', processed_img_data, namespace='/fourierify')
 
-    arrow_dat = getVectors.get_vectors(lineart)
+    arrow_dat = getVectors.get_vectors(conv_lineart)
     emit('vectorData', arrow_dat.tolist(), namespace='/fourierify')
     
 

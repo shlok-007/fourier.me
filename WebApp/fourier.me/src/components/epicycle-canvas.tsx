@@ -1,9 +1,20 @@
-import React, {useState} from 'react';
-import { Card } from './ui/card';
+import React from 'react';
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+  } from "./ui/card"
+import { Button } from "./ui/button"
+import { useToast } from './ui/use-toast';
+
 import { P5CanvasInstance, ReactP5Wrapper } from 'react-p5-wrapper';
 
 interface EpicyclesProps {
     vector_data: number[][];
+    setVectorData: React.Dispatch<React.SetStateAction<number[][] | undefined>>;
 }
 
 interface Vector {
@@ -11,30 +22,42 @@ interface Vector {
     y: number;
 }
 
-const Epicycles: React.FC<EpicyclesProps> = ({ vector_data }) => {
+const Epicycles: React.FC<EpicyclesProps> = ({ vector_data, setVectorData }) => {
     
     const dt : number = 0.1;
     const inpadding = 5;
-    const lineGap = 10;
-
+    const max_vectors = 175;
+    const min_radius = 0.5;
+    
+    var min_freq : number = 999999;
     var path : Vector[] = [];
     var time : number = 0;
     var scalingFactor : number = 1;
+
+    const {toast} = useToast();
+
+    let downloadGif : (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 
     const sketch = (p5: P5CanvasInstance) => {
         p5.setup = () => {
             const canvasDiv = document.getElementById('epicycle-canvas');
             if(canvasDiv){
                 let canvas = p5.createCanvas(canvasDiv.clientWidth - inpadding, canvasDiv.clientHeight - inpadding);
-                // console.log(canvasDiv?.clientWidth, canvasDiv?.clientHeight);
+                console.log(canvasDiv?.clientWidth, canvasDiv?.clientHeight);
                 canvas.parent('epicycle-canvas');
                 scalingFactor = canvasDiv.clientWidth / 10;
             }
-
+            // console.log("vector_data", vector_data);
             if(vector_data[0].length === 4){
+                if(max_vectors > 0)
+                    vector_data = vector_data.slice(0, Math.min(max_vectors, vector_data.length));
+                console.log("vector_data len", vector_data.length)
                 for (let i = 0; i < vector_data.length; i++){
                     vector_data[i] = [ vector_data[i][0], vector_data[i][1], p5.atan2( vector_data[i][3], vector_data[i][2] ) ];
+                    if(Math.abs(vector_data[i][1]) < min_freq && vector_data[i][1]!=0 ) min_freq = Math.abs(vector_data[i][1]);
                 }
+                console.log("vector_data", vector_data);
+                console.log("min_freq", min_freq);
             }
             
         };
@@ -79,14 +102,44 @@ const Epicycles: React.FC<EpicyclesProps> = ({ vector_data }) => {
 
                 x += radius * p5.cos(freq * time + phase);
                 y += radius * p5.sin(freq * time + phase);
-
+                // console.log(radius, freq, phase, x, y);
                 p5.strokeWeight(2);
                 p5.stroke(55, 198, 255, 100);
-                p5.ellipse(prevx, prevy, radius * 2);
-                
-                arrow(p5.createVector(prevx, prevy), p5.createVector(x, y), i);
+                if(radius / scalingFactor > min_radius){
+                    p5.ellipse(prevx, prevy, radius * 2);
+                    arrow(p5.createVector(prevx, prevy), p5.createVector(x, y), i);
+                } else{
+                    p5.stroke(255);
+                    p5.line(prevx, prevy, x, y);
+                    p5.strokeWeight(1);
+                }
             }
             return p5.createVector(x, y);
+        }
+
+        downloadGif = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+            e.preventDefault();
+            const options = {
+                unit: 'frames',
+                delay: 0,
+                silent: true
+            }
+            const num_frames = Math.ceil( p5.TWO_PI / (min_freq*dt*60) );
+            console.log(num_frames);
+            try{
+                p5.saveGif('epicycle.gif', num_frames, options);
+                toast({
+                    title: "Rendering...",
+                    description: "Your GIF is being exported. It may take around a minute.",
+                });
+            } catch (err) {
+                console.log(err);
+                toast({
+                    variant: "destructive",
+                    title: "Uh oh! Something went wrong.",
+                    description: "Please try again",
+                })
+            }
         }
 
         p5.draw = () => {
@@ -109,7 +162,7 @@ const Epicycles: React.FC<EpicyclesProps> = ({ vector_data }) => {
 
             time += dt;
 
-            if (time > p5.TWO_PI / vector_data[0][1]) {
+            if (time > p5.TWO_PI / min_freq) {
                 time = 0;
                 path = [];
             }
@@ -117,8 +170,29 @@ const Epicycles: React.FC<EpicyclesProps> = ({ vector_data }) => {
     };
 
     return (
-    <Card id="epicycle-canvas" className="w-80 md:w-96 h-80 md:h-96 flex items-center justify-center border-2 rounded-lg bg-black">
-        <ReactP5Wrapper sketch={sketch} />
+    // <Card className="w-80 md:w-96 h-80 md:h-96 flex flex-col items-center justify-center border-2 rounded-lg bg-black">
+    <Card className="w-80 md:w-96 flex flex-col items-center border-2 rounded-lg">
+        <CardHeader className="text-center">
+            <CardTitle>Here it is!</CardTitle>
+            <CardDescription>Enjoy ;)</CardDescription>
+        </CardHeader>
+        <CardContent id="epicycle-canvas" className="w-80 h-80 border-2 rounded-lg flex flex-col items-center justify-center p-0 bg-black">
+            <ReactP5Wrapper sketch={sketch} />
+        </CardContent>
+        <CardFooter className="flex justify-between gap-20 mt-5
+        ">
+        <Button 
+            variant="outline"
+            onClick={(e)=> {e.preventDefault(); setVectorData(undefined)}}
+        >
+            Try another
+        </Button>
+        <Button 
+            onClick={(e) => { 
+                downloadGif(e);
+            } }
+        >Save GIF</Button>
+      </CardFooter>
     </Card>)
 };
 
