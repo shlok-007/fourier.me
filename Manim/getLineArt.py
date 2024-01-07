@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 # Parameters
 img_res = 512
 kernel_size = 5
-pixel_threshold = 120
+pixel_threshold = 100
 
 debug = __name__ == "__main__"
 
@@ -27,6 +27,26 @@ def get_lineart(image):
     lineart = processor(image)
     lineart = np.array(lineart)[:, :, 0]
 
+    num_pixels = 0
+    for i in range(lineart.shape[0]):
+        for j in range(lineart.shape[1]):
+            if lineart[i, j] > pixel_threshold:
+                num_pixels += 1
+    print("Number of pixels above threshold:", num_pixels)
+
+    if(num_pixels < 6000):
+        kernel_size = 3
+    elif(num_pixels < 10000):
+        kernel_size = 5
+    elif(num_pixels < 14000):
+        kernel_size = 7
+    elif(num_pixels < 18000):
+        kernel_size = 9
+    else:
+        kernel_size = 11
+    print("Kernel size:", kernel_size)
+    num_pixels = 0
+
     if debug:
         plt.imshow(lineart, cmap="gray")
         plt.show()
@@ -43,6 +63,9 @@ def get_lineart(image):
 
             y, x = np.unravel_index(np.argmax(block), block.shape)
             result[i + y - mid, j + x - mid] = 255
+            num_pixels += 1
+    
+    print("Number of pixels in result:", num_pixels)
 
     if debug:
         plt.imshow(result, cmap="gray")

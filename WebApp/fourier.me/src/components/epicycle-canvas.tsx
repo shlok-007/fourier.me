@@ -9,6 +9,7 @@ import {
   } from "./ui/card"
 import { Button } from "./ui/button"
 import { useToast } from './ui/use-toast';
+import { Slider } from './ui/slider';
 
 import { P5CanvasInstance, ReactP5Wrapper } from 'react-p5-wrapper';
 
@@ -23,17 +24,22 @@ interface Vector {
 }
 
 const Epicycles: React.FC<EpicyclesProps> = ({ vector_data, setVectorData }) => {
-    
+
     const dt : number = 0.1;
     const inpadding = 5;
     const max_vectors = 175;
     const min_radius = 0.5;
+    const min_threshold_freq  = 0.05;
     
     var min_freq : number = 999999;
     var path : Vector[] = [];
     var time : number = 0;
     var scalingFactor : number = 1;
+    var num_vectors : number = vector_data.length;
 
+    var freqScalingFactor = 1;
+
+    const og_num_vectors = vector_data.length;
     const {toast} = useToast();
 
     let downloadGif : (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
@@ -50,13 +56,20 @@ const Epicycles: React.FC<EpicyclesProps> = ({ vector_data, setVectorData }) => 
             // console.log("vector_data", vector_data);
             if(vector_data[0].length === 4){
                 if(max_vectors > 0)
-                    vector_data = vector_data.slice(0, Math.min(max_vectors, vector_data.length));
+                    num_vectors = Math.min(max_vectors, vector_data.length);
                 console.log("vector_data len", vector_data.length)
                 for (let i = 0; i < vector_data.length; i++){
                     vector_data[i] = [ vector_data[i][0], vector_data[i][1], p5.atan2( vector_data[i][3], vector_data[i][2] ) ];
                     if(Math.abs(vector_data[i][1]) < min_freq && vector_data[i][1]!=0 ) min_freq = Math.abs(vector_data[i][1]);
                 }
-                console.log("vector_data", vector_data);
+                console.log("min_freq", min_freq);
+                // console.log("vector_data", vector_data);
+                if(min_threshold_freq > 0 && min_freq < min_threshold_freq){
+                    // setFreqScalingFactor(min_threshold_freq / min_freq);
+                    freqScalingFactor = min_threshold_freq / min_freq;
+                    console.log("Freq scaling factor", min_threshold_freq / min_freq);
+                    min_freq = min_threshold_freq;
+                }
                 console.log("min_freq", min_freq);
             }
             
@@ -94,11 +107,12 @@ const Epicycles: React.FC<EpicyclesProps> = ({ vector_data, setVectorData }) => 
         const epicycles = () => {
             let x = 0;
             let y = 0;
-            for (let i = 0; i < vector_data.length; i++) {
+            for (let i = 0; i < num_vectors; i++) {
                 let prevx = x;
                 let prevy = y;
                 let [radius, freq, phase] = vector_data[i];
                 radius *= scalingFactor;
+                freq *= freqScalingFactor;
 
                 x += radius * p5.cos(freq * time + phase);
                 y += radius * p5.sin(freq * time + phase);
@@ -124,7 +138,7 @@ const Epicycles: React.FC<EpicyclesProps> = ({ vector_data, setVectorData }) => 
                 delay: 0,
                 silent: true
             }
-            const num_frames = Math.ceil( p5.TWO_PI / (min_freq*dt*60) );
+            const num_frames = Math.ceil( p5.TWO_PI / (min_freq*freqScalingFactor*dt*60) );
             console.log(num_frames);
             try{
                 p5.saveGif('epicycle.gif', num_frames, options);
@@ -162,7 +176,7 @@ const Epicycles: React.FC<EpicyclesProps> = ({ vector_data, setVectorData }) => 
 
             time += dt;
 
-            if (time > p5.TWO_PI / min_freq) {
+            if (time > p5.TWO_PI / (min_freq*freqScalingFactor)) {
                 time = 0;
                 path = [];
             }
@@ -179,8 +193,28 @@ const Epicycles: React.FC<EpicyclesProps> = ({ vector_data, setVectorData }) => 
         <CardContent id="epicycle-canvas" className="w-80 h-80 border-2 rounded-lg flex flex-col items-center justify-center p-0 bg-black">
             <ReactP5Wrapper sketch={sketch} />
         </CardContent>
+        <div className='text-left w-72 md:w-80 mt-5'
+        >
+            Speed
+        </div>
+        <Slider defaultValue={[freqScalingFactor]} max={5} step={0.1}
+        className="w-72 md:w-80 mt-3" 
+        onValueChange={(val) => {freqScalingFactor = val[0]; path=[]; time=0;}}
+        />
+
+        <div className='text-left w-72 md:w-80 mt-6'
+        >
+            Number of vectors
+        </div>
+        <Slider defaultValue={[max_vectors]} max={og_num_vectors} step={1}
+        className="w-72 md:w-80 mt-3 mb-3" 
+        onValueChange={(val) => {num_vectors = val[0]; path=[]; time=0;}}
+        />
+
+
         <CardFooter className="flex justify-between gap-20 mt-5
         ">
+
         <Button 
             variant="outline"
             onClick={(e)=> {e.preventDefault(); setVectorData(undefined)}}

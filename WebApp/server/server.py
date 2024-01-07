@@ -12,9 +12,9 @@ import getVectors
 import base64
 
 app = Flask(__name__)
-socketio = SocketIO(app, cors_allowed_origins='http://localhost:3000')
+socketio = SocketIO(app, cors_allowed_origins='*')
 
-encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
+encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 5]
 b64_src = "data:image/jpg;base64,"
 
 @socketio.on('connect', namespace='/fourierify')
@@ -43,4 +43,4 @@ def process_image(image_base64):
     
 
 if __name__ == "__main__":
-    socketio.run(app, debug=True, port=5787)
+    socketio.run(app, debug=True, host="0.0.0.0", port=5787)
