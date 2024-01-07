@@ -35,7 +35,6 @@ const Epicycles: React.FC<EpicyclesProps> = ({ vector_data, setVectorData }) => 
     const inpadding = 5;
     const max_vectors = 175;
     const min_radius = 0.5;
-    const min_threshold_freq  = 0.05;
     
     var min_freq : number = 999999;
     var path : Vector[] = [];
@@ -43,7 +42,7 @@ const Epicycles: React.FC<EpicyclesProps> = ({ vector_data, setVectorData }) => 
     var scalingFactor : number = 1;
     var num_vectors : number = vector_data.length;
 
-    var freqScalingFactor = 1;
+    var freqScalingFactor = 1.5;
 
     const og_num_vectors = vector_data.length;
     const {toast} = useToast();
@@ -59,26 +58,16 @@ const Epicycles: React.FC<EpicyclesProps> = ({ vector_data, setVectorData }) => 
                 canvas.parent('epicycle-canvas');
                 scalingFactor = canvasDiv.clientWidth / 10;
             }
-            // console.log("vector_data", vector_data);
-            if(vector_data[0].length === 4){
-                if(max_vectors > 0)
-                    num_vectors = Math.min(max_vectors, vector_data.length);
-                console.log("vector_data len", vector_data.length)
-                for (let i = 0; i < vector_data.length; i++){
-                    vector_data[i] = [ vector_data[i][0], vector_data[i][1], p5.atan2( vector_data[i][3], vector_data[i][2] ) ];
-                    if(Math.abs(vector_data[i][1]) < min_freq && vector_data[i][1]!=0 ) min_freq = Math.abs(vector_data[i][1]);
-                }
-                console.log("min_freq", min_freq);
-                // console.log("vector_data", vector_data);
-                if(min_threshold_freq > 0 && min_freq < min_threshold_freq){
-                    // setFreqScalingFactor(min_threshold_freq / min_freq);
-                    freqScalingFactor = min_threshold_freq / min_freq;
-                    console.log("Freq scaling factor", min_threshold_freq / min_freq);
-                    min_freq = min_threshold_freq;
-                }
-                console.log("min_freq", min_freq);
-            }
             
+            if(max_vectors > 0)
+                num_vectors = Math.min(max_vectors, vector_data.length);
+            for (let i = 0; i < vector_data.length; i++){
+                if(vector_data[i].length === 4)
+                    vector_data[i] = [ vector_data[i][0], vector_data[i][1], p5.atan2( vector_data[i][3], vector_data[i][2] ) ];
+                if(Math.abs(vector_data[i][1]) < min_freq && vector_data[i][1]!=0 )
+                    min_freq = Math.abs(vector_data[i][1]);
+            }
+            console.log("min_freq", min_freq);
         };
 
         p5.windowResized = () => {

@@ -14,8 +14,8 @@ import base64
 app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins='*')
 
-encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 5]
-b64_src = "data:image/jpg;base64,"
+encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 10]
+# b64_src = "data:image/jpg;base64,"
 
 @socketio.on('connect', namespace='/fourierify')
 def fourierify_connect():
@@ -33,13 +33,15 @@ def process_image(image_base64):
 
     conv_lineart, lineart = getLineArt.get_lineart(image)
     result, frame_encoded = cv2.imencode(".jpg", lineart, encode_param)
-    processed_img_data = base64.b64encode(frame_encoded).decode()
-    processed_img_data = b64_src + processed_img_data
-    # lineart_stream = base64.b64encode(lineart.tobytes())
-    emit('lineart', processed_img_data, namespace='/fourierify')
+    emit('lineart', frame_encoded.tobytes(), namespace='/fourierify')
 
     arrow_dat = getVectors.get_vectors(conv_lineart)
     emit('vectorData', arrow_dat.tolist(), namespace='/fourierify')
+
+@socketio.on('disconnect', namespace='/fourierify')
+def fourierify_disconnect():
+    socketio.disconnect()
+    print('Client disconnected')
     
 
 if __name__ == "__main__":

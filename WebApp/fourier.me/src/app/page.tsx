@@ -10,19 +10,17 @@ import ImageSelector from "@/components/image-select"
 import Epicycles from "@/components/epicycle-canvas"
 import LineartPreview from "@/components/lineart-preview"
 
-// import dummyVectorData from "@/components/dummy-vector-data"
+// import dummyVectorData from "../lib/dummyVectorData"
 
 let socketConn : Socket;
 
 export default function Home() {
 
-  const [socketConnected, setSocketConnected] = useState<boolean>(false);
   const [lineartPreview, setLineartPreview] = useState<string | undefined>(undefined);
   const [vectorData, setVectorData] = useState<number[][] | undefined>(undefined);
   const {toast} = useToast();
 
   useEffect(() => {
-    if (socketConnected) return;
         socketInitializer();
 
     return () => {
@@ -32,15 +30,24 @@ export default function Home() {
 
   function socketInitializer() {
     socketConn = io(`${process.env.NEXT_PUBLIC_SERVER_URL}/fourierify`);
-    setSocketConnected(true);
 
     socketConn.on('connect', () => {
       console.log('Connected to server');
     });
 
-    socketConn.on('lineart', (url: string) => {
-        console.log('lineart fetched', url);
-      setLineartPreview(url);
+    // socketConn.on('lineart', (url: string) => {
+    //     console.log('lineart fetched', url);
+    //   setLineartPreview(url);
+    // });
+
+    socketConn.on('lineart', (data : ArrayBuffer) => {
+      // console.log('lineart fetched', data);
+      var arrayBufferView = new Uint8Array( data );
+      var blob = new Blob( [ arrayBufferView ], { type: "image/jpeg" } );
+      var urlCreator = window.URL || window.webkitURL;
+      var imageUrl = urlCreator.createObjectURL( blob );
+      console.log(imageUrl);
+      setLineartPreview(imageUrl);
     });
   
     socketConn.on('vectorData', (data: number[][]) => {
@@ -52,7 +59,7 @@ export default function Home() {
 
   function getVectors( e: React.MouseEvent<HTMLButtonElement, MouseEvent>, file: File | null, setImageSubmitted: React.Dispatch<React.SetStateAction<boolean>>){
     e.preventDefault();
-
+    socketInitializer();
     if (!file) return;
     const reader = new FileReader();
     reader.onload = function(event: ProgressEvent<FileReader>) {

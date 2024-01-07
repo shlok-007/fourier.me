@@ -8,6 +8,8 @@ img_res = 512
 kernel_size = 5
 pixel_threshold = 100
 
+# img_emit_res = 200
+
 debug = __name__ == "__main__"
 
 def get_lineart(image):
@@ -26,7 +28,13 @@ def get_lineart(image):
     processor = LineartDetector.from_pretrained("lllyasviel/Annotators")
     print("Processing image...")
     lineart = processor(image)
+
+    # print(lineart.size)
     lineart = np.array(lineart)[:, :, 0]
+    # lineart2emit = lineart
+    # lineart2emit = cv2.resize(lineart2emit, (img_emit_res*lineart2emit.shape[1]//max(lineart2emit.shape), img_emit_res*lineart2emit.shape[0]//max(lineart2emit.shape)))
+    # print(lineart2emit.shape)
+    # print(lineart.shape)
 
     num_pixels = 0
     for i in range(lineart.shape[0]):
@@ -80,6 +88,6 @@ def get_lineart(image):
 
 if __name__ == "__main__":
     imgName = "pi-symbol.png"  # "Robot.png"  "celeb1.jpeg"  "pi-symbol.png"
-    image = cv2.imread("../images/" + imgName)
+    image = cv2.imread("../../images/" + imgName)
     
     get_lineart(image)
