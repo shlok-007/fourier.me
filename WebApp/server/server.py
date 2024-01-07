@@ -12,7 +12,7 @@ import getVectors
 import base64
 
 app = Flask(__name__)
-socketio = SocketIO(app, cors_allowed_origins='*')
+socketio = SocketIO(app, cors_allowed_origins='*', max_http_buffer_size=20*1e6)
 
 encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 10]
 # b64_src = "data:image/jpg;base64,"
