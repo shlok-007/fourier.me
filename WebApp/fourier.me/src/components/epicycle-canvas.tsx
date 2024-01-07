@@ -11,7 +11,13 @@ import { Button } from "./ui/button"
 import { useToast } from './ui/use-toast';
 import { Slider } from './ui/slider';
 
-import { P5CanvasInstance, ReactP5Wrapper } from 'react-p5-wrapper';
+import dynamic from 'next/dynamic'
+
+import { P5CanvasInstance, P5WrapperProps } from 'react-p5-wrapper';
+const ReactP5Wrapper = dynamic(() => import('react-p5-wrapper')
+    .then(mod => mod.ReactP5Wrapper as any), {
+    ssr: false
+}) as unknown as React.NamedExoticComponent<P5WrapperProps>;
 
 interface EpicyclesProps {
     vector_data: number[][];
