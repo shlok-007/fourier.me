@@ -40,7 +40,7 @@ export default function Home() {
     //   setLineartPreview(url);
     // });
 
-    socketConn.on('lineart', (data : ArrayBuffer) => {
+    socketConn.on('lineart', (data : ArrayBuffer, ack) => {
       // console.log('lineart fetched', data);
       var arrayBufferView = new Uint8Array( data );
       var blob = new Blob( [ arrayBufferView ], { type: "image/jpeg" } );
@@ -48,6 +48,7 @@ export default function Home() {
       var imageUrl = urlCreator.createObjectURL( blob );
       console.log(imageUrl);
       setLineartPreview(imageUrl);
+      ack();
     });
   
     socketConn.on('vectorData', (data: number[][]) => {

@@ -33,8 +33,12 @@ def process_image(image_base64):
 
     conv_lineart, lineart = getLineArt.get_lineart(image)
     result, frame_encoded = cv2.imencode(".jpg", lineart, encode_param)
-    emit('lineart', frame_encoded.tobytes(), namespace='/fourierify')
+    emit('lineart', frame_encoded.tobytes(), namespace='/fourierify', callback=lambda : send_vector_data(conv_lineart))
 
+    # arrow_dat = getVectors.get_vectors(conv_lineart)
+    # emit('vectorData', arrow_dat.tolist(), namespace='/fourierify')
+
+def send_vector_data(conv_lineart):
     arrow_dat = getVectors.get_vectors(conv_lineart)
     emit('vectorData', arrow_dat.tolist(), namespace='/fourierify')
 
