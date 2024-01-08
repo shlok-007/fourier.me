@@ -41,6 +41,7 @@ const Epicycles: React.FC<EpicyclesProps> = ({ vector_data, setVectorData }) => 
     var time : number = 0;
     var scalingFactor : number = 1;
     var num_vectors : number = vector_data.length;
+    var strokeWeight : number = 5;
 
     var freqScalingFactor = 1.5;
 
@@ -159,7 +160,7 @@ const Epicycles: React.FC<EpicyclesProps> = ({ vector_data, setVectorData }) => 
             let v = epicycles();
             path.unshift(v);
             
-            p5.strokeWeight(5);
+            p5.strokeWeight(strokeWeight);
             p5.stroke(255, 255, 0);
             p5.beginShape();
             p5.noFill();
@@ -201,9 +202,18 @@ const Epicycles: React.FC<EpicyclesProps> = ({ vector_data, setVectorData }) => 
         >
             Number of vectors
         </div>
-        <Slider defaultValue={[max_vectors]} max={og_num_vectors} step={1}
-        className="w-72 md:w-80 mt-3 mb-3" 
+        <Slider defaultValue={[max_vectors]} min={1} max={og_num_vectors} step={1}
+        className="w-72 md:w-80 mt-3" 
         onValueChange={(val) => {num_vectors = val[0]; path=[]; time=0;}}
+        />
+
+        <div className='text-left w-72 md:w-80 mt-6'
+        >
+            Stroke-width
+        </div>
+        <Slider defaultValue={[strokeWeight]} min={1} max={10} step={1}
+        className="w-72 md:w-80 mt-3 mb-3" 
+        onValueChange={(val) => {strokeWeight = val[0]; path=[]; time=0;}}
         />
 
 
