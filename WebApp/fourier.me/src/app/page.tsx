@@ -29,8 +29,7 @@ export default function Home() {
   }, []);
 
   function socketInitializer() {
-    socketConn = io(`${process.env.NEXT_PUBLIC_SERVER_URL}/fourierify`);
-
+    socketConn = io(`${process.env.NEXT_PUBLIC_SERVER_URL}/fourierify`,{autoConnect: true});
     socketConn.on('connect', () => {
       console.log('Connected to server');
     });
@@ -49,6 +48,7 @@ export default function Home() {
       console.log(imageUrl);
       setLineartPreview(imageUrl);
       ack();
+      socketInitializer();
     });
   
     socketConn.on('vectorData', (data: number[][]) => {
