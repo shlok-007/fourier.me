@@ -114,6 +114,7 @@ export default function Home() {
         generate Fourier Epicycle Animations from your own images!
       </h2>
       <div className="mt-10">
+
         {!lineartPreview && !vectorData && 
           <ImageSelector getVectors={getVectors} />}
         

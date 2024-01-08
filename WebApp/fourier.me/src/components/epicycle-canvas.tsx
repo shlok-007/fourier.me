@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useRef} from 'react';
 import {
     Card,
     CardContent,
@@ -40,15 +40,21 @@ const Epicycles: React.FC<EpicyclesProps> = ({ vector_data, setVectorData }) => 
     var path : Vector[] = [];
     var time : number = 0;
     var scalingFactor : number = 1;
-    var num_vectors : number = vector_data.length;
-    var strokeWeight : number = 5;
-
-    var freqScalingFactor = 1.5;
 
     const og_num_vectors = vector_data.length;
     const {toast} = useToast();
 
     let downloadGif : (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+
+    const parameters = useRef({
+        num_vectors: Math.min(max_vectors, vector_data.length),
+        strokeWeight: 5,
+        freqScalingFactor: 1.5
+    });
+
+    // console.log("num_vectors", parameters.current.num_vectors)
+    // console.log("strokeWeight", parameters.current.strokeWeight)
+    // console.log("freqScalingFactor", parameters.current.freqScalingFactor)
 
     const sketch = (p5: P5CanvasInstance) => {
         p5.setup = () => {
@@ -60,8 +66,6 @@ const Epicycles: React.FC<EpicyclesProps> = ({ vector_data, setVectorData }) => 
                 scalingFactor = canvasDiv.clientWidth / 10;
             }
             
-            if(max_vectors > 0)
-                num_vectors = Math.min(max_vectors, vector_data.length);
             for (let i = 0; i < vector_data.length; i++){
                 if(vector_data[i].length === 4)
                     vector_data[i] = [ vector_data[i][0], vector_data[i][1], p5.atan2( vector_data[i][3], vector_data[i][2] ) ];
@@ -103,12 +107,12 @@ const Epicycles: React.FC<EpicyclesProps> = ({ vector_data, setVectorData }) => 
         const epicycles = () => {
             let x = 0;
             let y = 0;
-            for (let i = 0; i < num_vectors; i++) {
+            for (let i = 0; i < parameters.current.num_vectors; i++) {
                 let prevx = x;
                 let prevy = y;
                 let [radius, freq, phase] = vector_data[i];
                 radius *= scalingFactor;
-                freq *= freqScalingFactor;
+                freq *= parameters.current.freqScalingFactor;
 
                 x += radius * p5.cos(freq * time + phase);
                 y += radius * p5.sin(freq * time + phase);
@@ -134,7 +138,7 @@ const Epicycles: React.FC<EpicyclesProps> = ({ vector_data, setVectorData }) => 
                 delay: 0,
                 silent: true
             }
-            const num_frames = Math.ceil( p5.TWO_PI / (min_freq*freqScalingFactor*dt*60) );
+            const num_frames = Math.ceil( p5.TWO_PI / (min_freq*parameters.current.freqScalingFactor*dt*60) );
             console.log(num_frames);
             try{
                 p5.saveGif('epicycle.gif', num_frames, options);
@@ -160,7 +164,7 @@ const Epicycles: React.FC<EpicyclesProps> = ({ vector_data, setVectorData }) => 
             let v = epicycles();
             path.unshift(v);
             
-            p5.strokeWeight(strokeWeight);
+            p5.strokeWeight(parameters.current.strokeWeight);
             p5.stroke(255, 255, 0);
             p5.beginShape();
             p5.noFill();
@@ -172,7 +176,7 @@ const Epicycles: React.FC<EpicyclesProps> = ({ vector_data, setVectorData }) => 
 
             time += dt;
 
-            if (time > p5.TWO_PI / (min_freq*freqScalingFactor)) {
+            if (time > p5.TWO_PI / (min_freq*parameters.current.freqScalingFactor)) {
                 time = 0;
                 path = [];
             }
@@ -193,9 +197,9 @@ const Epicycles: React.FC<EpicyclesProps> = ({ vector_data, setVectorData }) => 
         >
             Speed
         </div>
-        <Slider defaultValue={[freqScalingFactor]} max={5} step={0.1}
+        <Slider defaultValue={[parameters.current.freqScalingFactor]} max={5} step={0.1}
         className="w-72 md:w-80 mt-3" 
-        onValueChange={(val) => {freqScalingFactor = val[0]; path=[]; time=0;}}
+        onValueChange={(val) => {parameters.current.freqScalingFactor = val[0]; path=[]; time=0;}}
         />
 
         <div className='text-left w-72 md:w-80 mt-6'
@@ -204,16 +208,16 @@ const Epicycles: React.FC<EpicyclesProps> = ({ vector_data, setVectorData }) => 
         </div>
         <Slider defaultValue={[max_vectors]} min={1} max={og_num_vectors} step={1}
         className="w-72 md:w-80 mt-3" 
-        onValueChange={(val) => {num_vectors = val[0]; path=[]; time=0;}}
+        onValueChange={(val) => {parameters.current.num_vectors = val[0]; path=[]; time=0;}}
         />
 
         <div className='text-left w-72 md:w-80 mt-6'
         >
             Stroke-width
         </div>
-        <Slider defaultValue={[strokeWeight]} min={1} max={10} step={1}
+        <Slider defaultValue={[parameters.current.strokeWeight]} min={1} max={10} step={1}
         className="w-72 md:w-80 mt-3 mb-3" 
-        onValueChange={(val) => {strokeWeight = val[0]; path=[]; time=0;}}
+        onValueChange={(val) => {parameters.current.strokeWeight = val[0]; path=[]; time=0;}}
         />
 
 
