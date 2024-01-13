@@ -30,14 +30,14 @@ export default function Home() {
 
   function socketInitializer() {
     socketConn = io(`${process.env.NEXT_PUBLIC_SERVER_URL}/fourierify`,{autoConnect: true});
+
     socketConn.on('connect', () => {
       console.log('Connected to server');
     });
 
-    // socketConn.on('lineart', (url: string) => {
-    //     console.log('lineart fetched', url);
-    //   setLineartPreview(url);
-    // });
+    socketConn.on('disconnect', () => {
+      console.log('Disconnected from server');
+    });
 
     socketConn.on('lineart', (data : ArrayBuffer, ack) => {
       // console.log('lineart fetched', data);
@@ -55,6 +55,10 @@ export default function Home() {
       setLineartPreview(undefined);
       setVectorData(data);
       console.log("vectorData fetched", data);
+    });
+
+    socketConn.on('ping', () => {
+      console.log('PING');
     });
   }
 

@@ -34,7 +34,7 @@ const Epicycles: React.FC<EpicyclesProps> = ({ vector_data, setVectorData }) => 
     const dt : number = 0.1;
     const inpadding = 5;
     const max_vectors = 175;
-    const min_radius = 0.5;
+    const min_radius = 0.1;
     
     var min_freq : number = 999999;
     var path : Vector[] = [];

@@ -1,5 +1,7 @@
 # fourier.me
 
+Try it out here! https://fourier-me.vercel.app/
+
 In this project I am building an WebApp that takes your photos and turns them into Fourier Epicycle Drawings.
 
 Not getting it ? Here's the inspiration: https://youtu.be/r6sGWTCMz2k
@@ -20,6 +22,13 @@ Here's a TLDR of how it works:
 * I have also added some optimizations in the manim code for faster rendering which is irrelevant for this TLDR.
 
 I am planning to make a WebApp out of this. Let's see how it goes!!!
+
+## Sample Renders
+
+<p align="center">
+  <img src="sample_images\robot.png" width="350" title="Input Image" alt="Robot.png">
+  <img src="sample_EpiCycle_Animations\robot.gif" width="350" title="Output Render" alt="Robot.gif">
+</p>
 
 ## How to run locally
 
