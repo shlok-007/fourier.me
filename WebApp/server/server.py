@@ -16,13 +16,14 @@ socketio = SocketIO(app, cors_allowed_origins='*', max_http_buffer_size=20*1e6)
 
 encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 10]
 # b64_src = "data:image/jpg;base64,"
+heartRate = 10
 
 @socketio.on('connect', namespace='/fourierify')
 def fourierify_connect():
     print('Client connected')
     def send_ping():
         while True:
-            socketio.sleep(10)
+            socketio.sleep(heartRate)
             socketio.server.emit('ping', namespace='/fourierify')
     socketio.start_background_task(send_ping)
 

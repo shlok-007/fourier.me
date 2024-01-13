@@ -32,9 +32,10 @@ interface Vector {
 const Epicycles: React.FC<EpicyclesProps> = ({ vector_data, setVectorData }) => {
 
     const dt : number = 0.1;
-    const inpadding = 5;
+    const inpadding = 10;
     const max_vectors = 175;
     const min_radius = 0.1;
+    const credits = "github.com/shlok-007/fourier.me";
     
     var min_freq : number = 999999;
     var path : Vector[] = [];
@@ -73,6 +74,7 @@ const Epicycles: React.FC<EpicyclesProps> = ({ vector_data, setVectorData }) => 
                     min_freq = Math.abs(vector_data[i][1]);
             }
             console.log("min_freq", min_freq);
+            p5.textSize(10);
         };
 
         p5.windowResized = () => {
@@ -158,6 +160,12 @@ const Epicycles: React.FC<EpicyclesProps> = ({ vector_data, setVectorData }) => 
 
         p5.draw = () => {
             p5.background(0);
+
+            p5.fill('white');
+            p5.stroke(0);
+            p5.text(credits, p5.width/2 + 10, p5.height - 5);
+            p5.noFill();
+            
             p5.translate(p5.width / 2, p5.height / 2);
             p5.scale(1, -1);
 

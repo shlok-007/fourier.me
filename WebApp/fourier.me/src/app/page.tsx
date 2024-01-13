@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { ModeToggle } from "@/components/ui/toggle-mode"
 import {io, Socket} from 'socket.io-client'
 import { useToast } from "@/components/ui/use-toast"
@@ -9,6 +9,7 @@ import { ToastAction } from "@/components/ui/toast"
 import ImageSelector from "@/components/image-select"
 import Epicycles from "@/components/epicycle-canvas"
 import LineartPreview from "@/components/lineart-preview"
+import Footer from "@/components/footer"
 
 // import dummyVectorData from "../lib/dummyVectorData"
 
@@ -116,6 +117,14 @@ export default function Home() {
     reader.readAsDataURL(file);
   }
 
+  const epicycleRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!lineartPreview && vectorData && epicycleRef.current) {
+        epicycleRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, [lineartPreview, vectorData]);
+
   return (
     <>
     <nav className="text-right mt-5 mr-5">
@@ -123,7 +132,7 @@ export default function Home() {
     </nav>
     <main className="flex flex-col items-center justify-center m-0">
       <h1
-        className="text-6xl md:text-8xl font-bold text-center mt-15"
+        className="text-6xl md:text-8xl font-bold text-center"
       >
         fourier.me
       </h1>
@@ -142,13 +151,14 @@ export default function Home() {
         )}
 
         {!lineartPreview && vectorData && (
-            <>
+            <div ref = {epicycleRef}>
             <Epicycles vector_data={vectorData} setVectorData={setVectorData}/>
             {/* <Epicycles vector_data={dummyVectorData} setVectorData={setVectorData}/> */}
-            </>
+            </div>
         )}
         
       </div>
+      <Footer />
       
     </main>
     </>

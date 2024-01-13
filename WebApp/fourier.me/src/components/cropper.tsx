@@ -23,11 +23,12 @@ interface CropperProps {
 const CropperComponent: React.FC<CropperProps> = ({imgUrl, setImage, setDialog}) => {
 
     const [crop, setCrop] = useState<Crop>()
-    const MIN_DIMENSION = 150;
+    const MIN_DIMENSION = 50;
 
     const onImageLoad = (e : React.SyntheticEvent<HTMLImageElement, Event>) => {
         const { width, height } = e.currentTarget;
-        const cropWidthInPercent = (MIN_DIMENSION / width) * 100;
+        // const cropWidthInPercent = (MIN_DIMENSION / width) * 100;
+        const cropWidthInPercent = 90;
         const crop = makeAspectCrop(
           {
             unit: "%",
@@ -109,6 +110,7 @@ const CropperComponent: React.FC<CropperProps> = ({imgUrl, setImage, setDialog})
               onChange={(pixelCrop, percentCrop) => setCrop(percentCrop)}
               keepSelection
               minWidth={MIN_DIMENSION}
+              minHeight={MIN_DIMENSION}
             >
                 <img
                 ref={imgRef}

@@ -32,6 +32,8 @@ export default function ImageSelector<Props extends ImageSelectorProps>({ getVec
 
     const {toast} = useToast();
 
+    const MIN_DIMENSION = 50;
+
     const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
       if (e.target && e.target.files) {
         if (e.target.files[0].type.split('/')[0] !== 'image') {
@@ -47,12 +49,12 @@ export default function ImageSelector<Props extends ImageSelectorProps>({ getVec
         const img = new Image();
         img.src = URL.createObjectURL(e.target.files[0]);
         img.onload = function() {
-          if (img.width < 150 || img.height < 150) {
+          if (img.width < MIN_DIMENSION || img.height < MIN_DIMENSION) {
             console.log("Image too small");
             toast({
               variant: "destructive",
               title: "Image too small",
-              description: "Please upload an image with minimum 150px width and height",
+              description: `Please upload an image with minimum ${MIN_DIMENSION}px width and height`,
             })
             setImageFile(null);
             setCropDialogOpen(false);
