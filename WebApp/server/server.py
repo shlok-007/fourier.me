@@ -20,6 +20,15 @@ encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 10]
 @socketio.on('connect', namespace='/fourierify')
 def fourierify_connect():
     print('Client connected')
+    def send_ping():
+        while True:
+            socketio.sleep(10)
+            socketio.server.emit('ping', namespace='/fourierify')
+    socketio.start_background_task(send_ping)
+
+@socketio.on('pong', namespace='/fourierify')
+def handle_pong():
+    print('-- PONG --')
 
 @socketio.on('imageUpload', namespace='/fourierify')
 def process_image(image_base64):

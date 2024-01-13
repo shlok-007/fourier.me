@@ -33,6 +33,8 @@ export default function Home() {
 
     socketConn.on('connect', () => {
       console.log('Connected to server');
+      // print session id
+      console.log(socketConn.id);
     });
 
     socketConn.on('disconnect', () => {
@@ -48,23 +50,36 @@ export default function Home() {
       console.log(imageUrl);
       setLineartPreview(imageUrl);
       ack();
-      socketInitializer();
+      // socketInitializer();
     });
   
     socketConn.on('vectorData', (data: number[][]) => {
       setLineartPreview(undefined);
       setVectorData(data);
-      console.log("vectorData fetched", data);
+      console.log("Total vectors: ", data.length);
+    });
+
+    socketConn.on('connect_error', (err) => {
+      console.log("connect_error", err.message); // prints the message associated with the error
+    });
+
+    socketConn.on('connect_timeout', (timeout) => {
+      console.log("connect_timeout", timeout);
+    });
+
+    socketConn.on('connect_failed', (err) => {
+      console.log("connect_failed", err.message);
     });
 
     socketConn.on('ping', () => {
       console.log('PING');
+      socketConn.emit('pong');  // respond with a 'pong'
     });
   }
 
   function getVectors( e: React.MouseEvent<HTMLButtonElement, MouseEvent>, file: File | null, setImageSubmitted: React.Dispatch<React.SetStateAction<boolean>>){
     e.preventDefault();
-    socketInitializer();
+    // socketInitializer();
     if (!file) return;
     const reader = new FileReader();
     reader.onload = function(event: ProgressEvent<FileReader>) {

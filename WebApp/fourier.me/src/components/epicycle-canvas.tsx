@@ -48,7 +48,7 @@ const Epicycles: React.FC<EpicyclesProps> = ({ vector_data, setVectorData }) => 
 
     const parameters = useRef({
         num_vectors: Math.min(max_vectors, vector_data.length),
-        strokeWeight: 5,
+        strokeWeight: 4,
         freqScalingFactor: 1.5
     });
 
@@ -61,7 +61,7 @@ const Epicycles: React.FC<EpicyclesProps> = ({ vector_data, setVectorData }) => 
             const canvasDiv = document.getElementById('epicycle-canvas');
             if(canvasDiv){
                 let canvas = p5.createCanvas(canvasDiv.clientWidth - inpadding, canvasDiv.clientHeight - inpadding);
-                console.log(canvasDiv?.clientWidth, canvasDiv?.clientHeight);
+                // console.log(canvasDiv?.clientWidth, canvasDiv?.clientHeight);
                 canvas.parent('epicycle-canvas');
                 scalingFactor = canvasDiv.clientWidth / 10;
             }
