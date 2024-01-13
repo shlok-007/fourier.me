@@ -26,7 +26,7 @@ I am planning to make a WebApp out of this. Let's see how it goes!!!
 ## Sample Renders
 
 <p align="center">
-  <img src="sample_images\robot.png" width="350" title="Input Image" alt="Robot.png">
+  <img src="sample_images\Robot.png" width="350" title="Input Image" alt="Robot.png">
   <img src="sample_EpiCycle_Animations\robot.gif" width="350" title="Output Render" alt="Robot.gif">
 </p>
 
