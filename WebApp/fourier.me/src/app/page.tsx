@@ -82,7 +82,7 @@ export default function Home() {
     });
 
     socketConn.on('ping', () => {
-      console.log('PING');
+      // console.log('PING');
       socketConn.emit('pong');  // respond with a 'pong'
     });
   }

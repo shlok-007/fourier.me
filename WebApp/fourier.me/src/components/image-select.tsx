@@ -35,7 +35,7 @@ export default function ImageSelector<Props extends ImageSelectorProps>({ getVec
     const MIN_DIMENSION = 50;
 
     const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
-      if (e.target && e.target.files) {
+      if (e && e.target && e.target.files) {
         if (e.target.files[0].type.split('/')[0] !== 'image') {
           console.log("Invalid file type");
           toast({
