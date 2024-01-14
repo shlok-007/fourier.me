@@ -8,7 +8,7 @@ export default function Footer(){
             </div>
             <div className="mr-5 flex items-center">
                 <a href="https://www.github.com/shlok-007/fourier.me" target="_blank" rel="noopener noreferrer" className="flex items-center">
-                    <GitHubLogoIcon className="w-6 h-6 text-white mr-3"/>
+                    <GitHubLogoIcon className="w-6 h-6 mr-3"/>
                     <p>shlok-007</p>
                 </a>
             </div>

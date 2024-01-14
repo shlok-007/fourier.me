@@ -11,18 +11,23 @@ import Epicycles from "@/components/epicycle-canvas"
 import LineartPreview from "@/components/lineart-preview"
 import Footer from "@/components/footer"
 
+import generateClientId from "@/lib/generateClientID"
+
 // import dummyVectorData from "../lib/dummyVectorData"
 
 let socketConn : Socket;
 
 export default function Home() {
 
+  const [clientId, setClientId] = useState<number | undefined>(undefined);
   const [lineartPreview, setLineartPreview] = useState<string | undefined>(undefined);
   const [vectorData, setVectorData] = useState<number[][] | undefined>(undefined);
   const {toast} = useToast();
 
   useEffect(() => {
-        socketInitializer();
+
+    setClientId(generateClientId());
+    socketInitializer();
 
     return () => {
       socketConn.disconnect();
@@ -30,7 +35,11 @@ export default function Home() {
   }, []);
 
   function socketInitializer() {
-    socketConn = io(`${process.env.NEXT_PUBLIC_SERVER_URL}/fourierify`,{autoConnect: true});
+
+    socketConn = io(`${process.env.NEXT_PUBLIC_SERVER_URL}/fourierify`,
+                    {autoConnect: true, 
+                      transports: ['polling']
+                    });
 
     socketConn.on('connect', () => {
       console.log('Connected to server');

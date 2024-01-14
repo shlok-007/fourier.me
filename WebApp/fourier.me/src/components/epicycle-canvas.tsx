@@ -32,7 +32,7 @@ interface Vector {
 const Epicycles: React.FC<EpicyclesProps> = ({ vector_data, setVectorData }) => {
 
     const dt : number = 0.1;
-    const inpadding = 10;
+    const inpadding = 5;
     const max_vectors = 175;
     const min_radius = 0.1;
     const credits = "github.com/shlok-007/fourier.me";
@@ -64,7 +64,7 @@ const Epicycles: React.FC<EpicyclesProps> = ({ vector_data, setVectorData }) => 
                 let canvas = p5.createCanvas(canvasDiv.clientWidth - inpadding, canvasDiv.clientHeight - inpadding);
                 // console.log(canvasDiv?.clientWidth, canvasDiv?.clientHeight);
                 canvas.parent('epicycle-canvas');
-                scalingFactor = canvasDiv.clientWidth / 10;
+                scalingFactor = canvasDiv.clientWidth / 12;
             }
             
             for (let i = 0; i < vector_data.length; i++){
@@ -81,7 +81,7 @@ const Epicycles: React.FC<EpicyclesProps> = ({ vector_data, setVectorData }) => 
             const canvasDiv = document.getElementById('epicycle-canvas');
             if(canvasDiv){
                 p5.resizeCanvas(canvasDiv.clientWidth - inpadding, canvasDiv.clientHeight - inpadding);
-                scalingFactor = canvasDiv.clientWidth / 10;
+                scalingFactor = canvasDiv.clientWidth / 12;
                 console.log(canvasDiv.clientWidth, canvasDiv.clientHeight);
             }
         }
@@ -163,9 +163,9 @@ const Epicycles: React.FC<EpicyclesProps> = ({ vector_data, setVectorData }) => 
 
             p5.fill('white');
             p5.stroke(0);
-            p5.text(credits, p5.width/2 + 10, p5.height - 5);
+            p5.text(credits, p5.width/2 + 8, p5.height - 5);
             p5.noFill();
-            
+
             p5.translate(p5.width / 2, p5.height / 2);
             p5.scale(1, -1);
 
