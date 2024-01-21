@@ -122,6 +122,7 @@ export default function Home() {
         toast({
           title: "Image uploaded!",
           description: "Your image has been uploaded. Please wait while we process it.",
+          duration: 2000,
         })
         console.log('image emitted');
         setImageSubmitted(true);
