@@ -15,44 +15,56 @@ import generateClientId from "@/lib/generateClientID"
 
 // import dummyVectorData from "../lib/dummyVectorData"
 
-let socketConn : Socket;
 
 export default function Home() {
+  const [socketConn, setSocketConn] = useState<Socket>();
 
-  const [clientId, setClientId] = useState<number | undefined>(undefined);
+  const [clientID, setClientID] = useState<number | undefined>(undefined);
   const [lineartPreview, setLineartPreview] = useState<string | undefined>(undefined);
   const [vectorData, setVectorData] = useState<number[][] | undefined>(undefined);
   const {toast} = useToast();
 
-  useEffect(() => {
+  useEffect(()=>{
+    if(!clientID){
+      setClientID(generateClientId());
+    }
+  }, []);
 
-    setClientId(generateClientId());
-    socketInitializer();
+  useEffect(() => {
+    if(clientID && !socketConn){
+      console.log(clientID);
+      socketInitializer();
+    }
 
     return () => {
-      socketConn.disconnect();
+      if(socketConn)
+        socketConn.disconnect();
     };
-  }, []);
+  }, [clientID, socketConn]);
 
   function socketInitializer() {
 
-    socketConn = io(`${process.env.NEXT_PUBLIC_SERVER_URL}/fourierify`,
+    if(socketConn)  return;
+
+    let conn : Socket = io(`${process.env.NEXT_PUBLIC_SERVER_URL}/fourierify`,
                     {autoConnect: true, 
                       transports: ['polling']
                     });
+    
+    setSocketConn(conn);
 
-    socketConn.on('connect', () => {
-      console.log('Connected to server');
-      // print session id
-      console.log(socketConn.id);
+    conn.on('connect', () => {
+      console.log('Connected to server: ', conn.id);
+      conn.emit('clientID', clientID);
     });
 
-    socketConn.on('disconnect', () => {
+    conn.on('disconnect', () => {
       console.log('Disconnected from server');
     });
 
-    socketConn.on('lineart', (data : ArrayBuffer, ack) => {
+    conn.on('lineart', (data : ArrayBuffer, ack) => {
       // console.log('lineart fetched', data);
+      if(vectorData)  return;
       var arrayBufferView = new Uint8Array( data );
       var blob = new Blob( [ arrayBufferView ], { type: "image/jpeg" } );
       var urlCreator = window.URL || window.webkitURL;
@@ -63,28 +75,30 @@ export default function Home() {
       // socketInitializer();
     });
   
-    socketConn.on('vectorData', (data: number[][]) => {
+    conn.on('vectorData', (data: number[][], ack) => {
       setLineartPreview(undefined);
       setVectorData(data);
       console.log("Total vectors: ", data.length);
+      ack();
     });
 
-    socketConn.on('connect_error', (err) => {
+    conn.on('connect_error', (err) => {
       console.log("connect_error", err.message); // prints the message associated with the error
     });
 
-    socketConn.on('connect_timeout', (timeout) => {
+    conn.on('connect_timeout', (timeout) => {
       console.log("connect_timeout", timeout);
     });
 
-    socketConn.on('connect_failed', (err) => {
+    conn.on('connect_failed', (err) => {
       console.log("connect_failed", err.message);
     });
 
-    socketConn.on('ping', () => {
-      // console.log('PING');
-      socketConn.emit('pong');  // respond with a 'pong'
+    conn.on('ping', () => {
+      console.log('PING');
+      conn.emit('pong');  // respond with a 'pong'
     });
+    
   }
 
   function getVectors( e: React.MouseEvent<HTMLButtonElement, MouseEvent>, file: File | null, setImageSubmitted: React.Dispatch<React.SetStateAction<boolean>>){
@@ -103,7 +117,7 @@ export default function Home() {
         return;
       }
       try{
-        socketConn.emit('imageUpload', event.target.result);
+        socketConn.emit('imageUpload', {clientID: clientID, imgData: event.target.result});
         
         toast({
           title: "Image uploaded!",
@@ -159,9 +173,9 @@ export default function Home() {
           <LineartPreview imgUrl={lineartPreview} />
         )}
 
-        {!lineartPreview && vectorData && (
+        {vectorData && (
             <div ref = {epicycleRef}>
-            <Epicycles vector_data={vectorData} setVectorData={setVectorData}/>
+            <Epicycles vector_data={vectorData} setVectorData={setVectorData} setLineartPreview={setLineartPreview}/>
             {/* <Epicycles vector_data={dummyVectorData} setVectorData={setVectorData}/> */}
             </div>
         )}

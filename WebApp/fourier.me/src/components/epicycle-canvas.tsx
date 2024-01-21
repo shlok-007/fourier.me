@@ -22,6 +22,7 @@ const ReactP5Wrapper = dynamic(() => import('react-p5-wrapper')
 interface EpicyclesProps {
     vector_data: number[][];
     setVectorData: React.Dispatch<React.SetStateAction<number[][] | undefined>>;
+    setLineartPreview: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
 interface Vector {
@@ -29,11 +30,11 @@ interface Vector {
     y: number;
 }
 
-const Epicycles: React.FC<EpicyclesProps> = ({ vector_data, setVectorData }) => {
+const Epicycles: React.FC<EpicyclesProps> = ({ vector_data, setVectorData, setLineartPreview }) => {
 
     const dt : number = 0.1;
     const inpadding = 5;
-    const max_vectors = 175;
+    const max_vectors = 200;
     const min_radius = 0.1;
     const credits = "github.com/shlok-007/fourier.me";
     
@@ -49,7 +50,7 @@ const Epicycles: React.FC<EpicyclesProps> = ({ vector_data, setVectorData }) => 
 
     const parameters = useRef({
         num_vectors: Math.min(max_vectors, vector_data.length),
-        strokeWeight: 4,
+        strokeWeight: 2,
         freqScalingFactor: 1.5
     });
 
@@ -185,6 +186,8 @@ const Epicycles: React.FC<EpicyclesProps> = ({ vector_data, setVectorData }) => 
             time += dt;
 
             if (time > p5.TWO_PI / (min_freq*parameters.current.freqScalingFactor)) {
+                // wait for 0.5 seconds
+                
                 time = 0;
                 path = [];
             }
@@ -234,7 +237,7 @@ const Epicycles: React.FC<EpicyclesProps> = ({ vector_data, setVectorData }) => 
 
         <Button 
             variant="outline"
-            onClick={(e)=> {e.preventDefault(); setVectorData(undefined)}}
+            onClick={(e)=> {e.preventDefault(); setLineartPreview(undefined); setVectorData(undefined);}}
         >
             Try another
         </Button>

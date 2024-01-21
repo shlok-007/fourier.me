@@ -13,5 +13,5 @@ export default function generateClientId() {
         hash |= 0; // Convert to 32bit integer
     }
 
-    return hash;
+    return Math.abs(hash);
 }
