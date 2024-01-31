@@ -2,7 +2,7 @@
 
 Try it out here! https://fourier-me.vercel.app/
 
-In this project I am building an WebApp that takes your photos and turns them into Fourier Epicycle Drawings.
+In this project I am building a tool that takes your photos and turns them into Fourier Epicycle Drawings.
 
 Not getting it ? Here's the inspiration: https://youtu.be/r6sGWTCMz2k
 
@@ -19,9 +19,6 @@ Here's a TLDR of how it works:
 7. Takes the Complex Discrete Fourier Transform of these points(using numpy's fft(fast fourier transform) function).
 8. Saves the fft data along with other details like frequency, amplitude in a csv file.
 9. Now comes the animation part, the manim code reads this csv file and makes the corresponding rotating arrows and circles and animates them.
-* I have also added some optimizations in the manim code for faster rendering which is irrelevant for this TLDR.
-
-I am planning to make a WebApp out of this. Let's see how it goes!!!
 
 ## Sample Renders
 
